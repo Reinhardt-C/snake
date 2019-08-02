@@ -75,17 +75,21 @@ class Snake {
 	}
 }
 
-let s, apple;
+let s, apple, score, record;
 
 function setup() {
 	createCanvas(400, 400);
 	
 	s = new Snake();
-	apple = [8, 8]
+	apple = [8, 8];
+	score = 0;
+	record = 0;
+	ld();
 }
 
 function draw() {
 	frameRate(10);
+	sv();
 	background(0);
 	stroke(255);
 	noFill();
@@ -99,6 +103,13 @@ function draw() {
 
 	s.show();
 	s.move();
+	
+	score = s.segments.length - 3;
+	if (score > record) {
+		record = score;
+	}
+	document.getElementById('score').innerHTML = `Score: ${score}`;
+	document.getElementById('record').innerHTML = `Record: ${record}`;
 }
 
 function keyPressed() {
@@ -123,5 +134,22 @@ function keyPressed() {
 				s.ndir.push(1);
 			}
 			break;
+	}
+}
+
+function sv() {
+	localStorage.setItem('save', JSON.stringify({score: score, record: record}));
+}
+
+function ld() {
+	if (JSON.parse(localStorage.getItem('save'))) {
+		let sg = JSON.parse(localStorage.getItem('save'));
+		if (sg) {
+			score = sg.score;
+			record = sg.record;
+		}
+		return true;
+	} else {
+		return false;
 	}
 }
