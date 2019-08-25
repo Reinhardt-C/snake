@@ -72,6 +72,10 @@ class Snake {
 	die() {
 		this.dead = true;
 		console.log('GAME OVER');
+		setTimeout(function() {
+			init();
+			delete this;
+		}, 1000);
 	}
 }
 
@@ -79,17 +83,19 @@ let s, apple, score, record;
 
 function setup() {
 	createCanvas(400, 400);
-	
-	s = new Snake();
-	apple = [8, 8];
-	score = 0;
+	init();
 	record = 0;
 	ld();
 }
 
+function init() {
+	s = new Snake();
+	apple = [8, 8];
+	score = 0;
+}
+
 function draw() {
-	frameRate(10);
-	sv();
+	frameRate(score + 3);
 	background(0);
 	stroke(255);
 	noFill();
@@ -107,6 +113,7 @@ function draw() {
 	score = s.segments.length - 3;
 	if (score > record) {
 		record = score;
+		sv();
 	}
 	document.getElementById('score').innerHTML = `Score: ${score}`;
 	document.getElementById('record').innerHTML = `Record: ${record}`;
@@ -138,15 +145,13 @@ function keyPressed() {
 }
 
 function sv() {
-	localStorage.setItem('save', JSON.stringify({score: score, record: record}));
+	localStorage.setItem('sv', JSON.stringify({record: record}));
 }
 
 function ld() {
-	if (JSON.parse(localStorage.getItem('save'))) {
-		let sg = JSON.parse(localStorage.getItem('save'));
-		if (sg.score != undefined) {
-			score = sg.score;
-		}
+	if (JSON.parse(localStorage.getItem('sv'))) {
+		let sg = JSON.parse(localStorage.getItem('sv'));
+		console.log(sg);
 		if (sg.record != undefined) {
 			record = sg.record;
 		}
